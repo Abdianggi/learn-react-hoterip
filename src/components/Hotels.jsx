@@ -47,7 +47,7 @@ export default function Hotels(){
 
     return (
         <>
-            <div className="flex justify-center items-center bg-gray-50">
+            <div className="flex flex-wrap justify-center items-center bg-gray-50">
                 {product.map((v, i) => (
                     <CardProduct key={i} items={v}/>
                 ))}
