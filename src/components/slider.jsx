@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 
-export default function slider({slides}){
-
+export default function slider({slides, show}){
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const prevSlide = () => {
@@ -32,17 +31,26 @@ export default function slider({slides}){
         };
     }, []);
 
-    return (
-        <div className='h-[32rem] w-full m-auto relative group'>
-            <div style={{ backgroundImage: `url(${slides[currentIndex].img})` }}
-                className='w-full h-full bg-center bg-cover duration-500'></div>
+    const SliderText = ({isShow}) => {
+        if(!isShow) return null;
+
+        return(
             <div className="absolute -translate-x-0 translate-y-[-50%] top-[40%] left-[20%]">
                 <h1 className="font-semibold lg:text-6xl sm:text-xl text-slate-100">
                     Explore our
                     <p className="text-[#002975] mt-3">Wonderful <span className="text-slate-100">trips</span></p>
                 </h1>
-                <p className="mt-6 text-gray-300 lg:text-2xl sm:text-xl lg:w-[34rem] sm:w-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
+                <p className="mt-6 text-gray-300 lg:text-2xl sm:text-xl lg:w-[34rem] sm:w-auto">Lorem ipsum dolor sit
+                    amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+                </p>
             </div>
+        );
+    }
+    return (
+        <div className='h-[32rem] w-full m-auto relative group'>
+            <div style={{ backgroundImage: `url(${slides[currentIndex].img})` }}
+                className='w-full h-full bg-center bg-cover duration-500'></div>
+            <SliderText isShow={show}/>
             {/* Left Arrow */}
             <div
                 className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-xl font-bold px-2.5 pb-1 rounded-full bg-black/20 hover:bg-blue-700 text-white cursor-pointer'>

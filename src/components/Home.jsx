@@ -14,7 +14,7 @@ export default function Home({ slides }) {
 
   return (
     <>
-      <Slider slides={slides} />
+      <Slider slides={slides} show={true}/>
       <SearchHotel />
       
       <div className="lg:mx-60 sm:mx-4 mt-20 p-5">

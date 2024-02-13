@@ -3,6 +3,7 @@ import Nav from "./components/nav";
 import Home from "./components/Home";
 import About from "./components/About";
 import Footer from "./components/footer";
+import Hotels from "./components/Hotels";
 
 export default function App() {
   let slides = [
@@ -27,16 +28,18 @@ export default function App() {
       title: 'Lorem Impsum',
     },
   ]
+  console.log(slides);
   return (
     <div className="m-auto">
       <Nav/>
       <Routes>
         <Route path="/" element={<Home slides={slides}/>} />
         <Route path="/about" element={<About />} />
+        <Route path="/products" element={<Hotels />} />
       </Routes>
-      <h1 className="text-3xl font-bold text-teal-800 underline my-8 justify-center flex">
+      {/* <h1 className="text-3xl font-bold text-teal-800 underline my-8 justify-center flex">
         Hello world!
-      </h1>
+      </h1> */}
       
       {/* <Carousel slides={slides}/> */}
       <Footer/>

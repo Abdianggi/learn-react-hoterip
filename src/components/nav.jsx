@@ -23,10 +23,10 @@ export default function Nav(){
             active:  window.location.pathname == '/destination',
         },
         {
-            title: 'Hotels',
-            href: 'https://abdianggi.github.io/b2bhoterip/',
+            title: 'Products',
+            href: '/products',
             blank: true,
-            active:  window.location.pathname == '/hotels',
+            active:  window.location.pathname == '/products',
         },
     ]
 
