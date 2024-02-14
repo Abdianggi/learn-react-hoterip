@@ -1,16 +1,32 @@
 import { useState, useEffect } from "react";
-import { getCartItems } from "../components/cardProduct";
+import { getCartItems } from "../components/ProductFunction";
+import { useCart } from "./cardProduct";
 
 export default function Cart(){
 
-    const [cartItems, setCartItems] = useState([]);
-    
-    useEffect(() => {
-        const items = getCartItems();
-        setCartItems(items);
-    }, []);
+    // const [cartItems, setCartItems] = useState([]);
+    const { cartItems, removeFromCart, plusQtyFromCart, minQtyFromCart } = useCart();
 
-    console.log(cartItems);
+    const handleRemoveClick = (itemId) => (event) => {
+        event.preventDefault();
+        removeFromCart(itemId);
+    };
+
+    const handlerPlusQtyClick = (itemId) => (event) => {
+        event.preventDefault();
+        plusQtyFromCart(itemId);
+    }
+
+    const handlerMinQtyClick = (itemId) => (event) => {
+        event.preventDefault();
+        minQtyFromCart(itemId);
+    }
+    
+    // useEffect(() => {
+    //     const items = getCartItems();
+    //     setCartItems(items);
+    // }, []);
+
     return (
         <div>
                 <div className="container mx-auto mt-10">
@@ -38,24 +54,24 @@ export default function Cart(){
                                             <div className="flex flex-col justify-between ml-4 flex-grow">
                                                 <span className="font-bold text-sm">{item.title}</span>
                                                 <span className="text-red-500 text-xs">{item.category}</span>
-                                                <a href="#" className="font-semibold hover:text-red-500 text-gray-500 text-xs">Remove</a>
+                                                <a href="#" onClick={handleRemoveClick(item.id)} className="font-semibold hover:text-red-500 text-gray-500 text-xs">Remove</a>
                                             </div>
                                         </div>
                                         <div className="flex justify-center w-1/5">
-                                            <svg className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512">
+                                            <svg className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512" onClick={handlerMinQtyClick(item.id)}>
                                                 <path
                                                     d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
                                             </svg>
 
                                             <input className="mx-2 border text-center w-8" type="text" value={item.quantity} />
 
-                                            <svg className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512">
+                                            <svg className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512" onClick={handlerPlusQtyClick(item.id)}>
                                                 <path
                                                     d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
                                             </svg>
                                         </div>
-                                        <span className="text-center w-1/5 font-semibold text-sm">$400.00</span>
-                                        <span className="text-center w-1/5 font-semibold text-sm">$400.00</span>
+                                        <span className="text-center w-1/5 font-semibold text-sm">{item.price}</span>
+                                        <span className="text-center w-1/5 font-semibold text-sm">{item.price * item.quantity}</span>
                                     </div>
                                 </div>
                                 

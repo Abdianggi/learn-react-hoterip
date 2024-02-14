@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import About from "./components/About";
 import Footer from "./components/footer";
 import Hotels from "./components/Hotels";
+import { CartProvider } from "./components/cardProduct";
 
 export default function App() {
   let slides = [
@@ -32,11 +33,13 @@ export default function App() {
   return (
     <div className="m-auto">
       <Nav/>
-      <Routes>
-        <Route path="/" element={<Home slides={slides}/>} />
-        <Route path="/about" element={<About />} />
-        <Route path="/products" element={<Hotels />} />
-      </Routes>
+      <CartProvider>
+        <Routes>
+          <Route path="/" element={<Home slides={slides}/>} />
+          <Route path="/about" element={<About />} />
+          <Route path="/products" element={<Hotels />} />
+        </Routes>
+      </CartProvider>
       {/* <h1 className="text-3xl font-bold text-teal-800 underline my-8 justify-center flex">
         Hello world!
       </h1> */}

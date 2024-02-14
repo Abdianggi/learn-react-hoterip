@@ -1,10 +1,9 @@
 import { useState } from "react";
 import CardProduct from "./cardProduct";
 import Cart from "./cart";
+import { ToastContainer } from "react-toastify";
 
 export default function Hotels(){
-
-    const [setProduct, Products] = useState([]);
 
     const product = [
                     {
@@ -54,6 +53,7 @@ export default function Hotels(){
             </div>
 
             <Cart />
+            <ToastContainer/>
         </>
     );
 }

@@ -1,5 +1,86 @@
-import { useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import Slider from "../components/slider";
+import { getCartItems } from "./ProductFunction";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const notify = (res) => toast(res);
+const CartContext = createContext();
+
+export const useCart = () => useContext(CartContext);
+
+export const CartProvider = ({ children }) => {
+    const [cartItems, setCartItems] = useState([]);
+
+    useEffect(() => {
+        const items = getCartItems();
+        setCartItems(items);
+    }, []);
+
+    const addToCart = (item) => {
+        // Ambil cart dari state
+        const updatedCart = [...cartItems];
+        
+        // Cek apakah item sudah ada di cart
+        const itemIndex = updatedCart.findIndex((cartItem) => cartItem.id === item.id);
+        
+        let message = 'Added!';
+        if (itemIndex > -1) {
+            // Jika item sudah ada, tambahkan jumlahnya
+            updatedCart[itemIndex].quantity += 1;
+            message = updatedCart[itemIndex].category+' '+updatedCart[itemIndex].title+' increase by 1!'
+        } else {
+            // Jika item belum ada, tambahkan item ke cart dengan quantity 1
+            const newItem = { ...item, quantity: 1 };
+            updatedCart.push(newItem); // Gunakan updatedCart bukan cart
+            message = newItem.category+' '+newItem.title+' added to cart!'
+        }    
+        
+        notify(message);
+        // console.log(updatedCart[itemIndex].title);
+
+        setCartItems(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+    };
+
+    const removeFromCart = (itemId) => {
+        let   itemCart    = cartItems.find((cartItem) => cartItem.id === itemId);
+        const updatedCart = cartItems.filter(item => item.id !== itemId);
+
+        setCartItems(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));  
+
+        let message = itemCart.category+' '+itemCart.title+' has been removed';
+        notify(message);
+    };
+
+    const plusQtyFromCart = (itemId) => {
+        const updatedCart = [...cartItems];
+        const itemIndex = updatedCart.findIndex((cartItem) => cartItem.id === itemId);
+        updatedCart[itemIndex].quantity += 1;
+        setCartItems(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));  
+    };
+
+    const minQtyFromCart = (itemId) => {
+        const updatedCart = [...cartItems];
+        const itemIndex = updatedCart.findIndex((cartItem) => cartItem.id === itemId);
+        if (updatedCart[itemIndex].quantity == 1) {
+            removeFromCart(itemId);
+        }else{
+            updatedCart[itemIndex].quantity -= 1;
+            setCartItems(updatedCart);
+            localStorage.setItem("cart", JSON.stringify(updatedCart));  
+        }
+    };
+
+    return (
+        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, plusQtyFromCart, minQtyFromCart }}>
+            {children}
+        </CartContext.Provider>
+    );
+};
+
 
 const ProductModal = ({ isOpen, item, onClose }) => {
     // if (!isOpen) return null;
@@ -34,36 +115,32 @@ const ProductModal = ({ isOpen, item, onClose }) => {
     );
 };
 
-// Contoh fungsi untuk menambahkan item ke cart di localStorage
-const addToCart = (item) => {
-    // Coba ambil cart dari localStorage
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// // Contoh fungsi untuk menambahkan item ke cart di localStorage
+// const addToCart = (item) => {
+//     // Coba ambil cart dari localStorage
+//     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     
-    // Cek apakah item sudah ada di cart
-    const itemIndex = cart.findIndex((cartItem) => cartItem.id === item.id);
-    if (itemIndex > -1) {
-      // Jika item sudah ada, tambahkan jumlahnya
-      cart[itemIndex].quantity += 1;
-    } else {
-      // Jika item belum ada, tambahkan item ke cart dengan quantity 1
-      const newItem = { ...item, quantity: 1 };
-      cart.push(newItem);
-    }    
-    // Simpan kembali cart yang sudah diupdate ke localStorage
-    localStorage.setItem("cart", JSON.stringify(cart));
-    console.log(JSON.parse(localStorage.getItem("cart")));
+//     // Cek apakah item sudah ada di cart
+//     const itemIndex = cart.findIndex((cartItem) => cartItem.id === item.id);
+//     if (itemIndex > -1) {
+//       // Jika item sudah ada, tambahkan jumlahnya
+//       cart[itemIndex].quantity += 1;
+//     } else {
+//       // Jika item belum ada, tambahkan item ke cart dengan quantity 1
+//       const newItem = { ...item, quantity: 1 };
+//       cart.push(newItem);
+//     }    
+//     // Simpan kembali cart yang sudah diupdate ke localStorage
+//     localStorage.setItem("cart", JSON.stringify(cart));
+//     console.log(JSON.parse(localStorage.getItem("cart")));
 
-};
-
-export const getCartItems = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    return cart;
-};
+// };
 
 export default function CardProduct({items}){
     const [isModalOpen, setIsModalOpen] = useState(false);
     const toggleModal = () => setIsModalOpen(!isModalOpen);
-
+    const { addToCart } = useCart();
+    
     const handleAddToCartClick = () => {
         addToCart(items);
     };
